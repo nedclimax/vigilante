@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"
+		integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ=="
+		crossorigin="anonymous" defer></script>
+	<script src="./shader.js" type="module"></script>
+	<title>WebGL Test</title>
+</head>
+
+<body>
+	<canvas id="glCanvas" width="800" height="600"></canvas>
+	<script type="module">
+
+		import { initShaderProgram } from "./shader.js";
+
+		const canvas = document.getElementById("glCanvas");
+
+		/**
+		 * @type {WebGL2RenderingContext}
+		 * @const
+		*/
+		const gl = canvas.getContext("webgl2");
+
+		gl.clearColor(0, 0, 0, 1);
+		gl.clear(gl.COLOR_BUFFER_BIT);
+
+		const vsSource = `
+            attribute vec4 aVertexPosition;
+            uniform mat4 uModelViewMatrix;
+            uniform mat4 uProjectionMatrix;
+
+            void main() {
+              gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+            }
+        `;
+
+		const fsSource = `
+            void main() {
+              gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            }
+        `;
+
+		const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
+
+		const programInfo = {
+			program: shaderProgram,
+			attribLocations: {
+				vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition")
+			},
+			uniformLocations: {
+				projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
+				modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
+			}
+		};
+	</script>
+</body>
+
+</html>
