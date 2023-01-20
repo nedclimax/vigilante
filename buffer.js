@@ -30,3 +30,5 @@ function initPositionBuffer(gl) {
 
 	return positionBuffer;
 }
+
+export {initPositionBuffer};
